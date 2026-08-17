@@ -1,12 +1,14 @@
-#include <iostream>
 
-#include "software_renderer.hpp"
+#include "engine.hpp"
 
 int main() {
-    Software_renderer renderer ;
+    Engine engine ;
     std::filesystem::path file_path = "../temp_folder/cube.obj";
 
-    renderer.parse(file_path);
+    engine.parse(file_path);
+    engine.init();
+
+
 
 
 
