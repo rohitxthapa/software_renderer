@@ -5,10 +5,14 @@
 
 class Camera{
     public:
-    Vec_3 position;
-    Vec_3 direction;
-    float speed_per_sec;
-    matrix_4x4 t_martix;
+    Vec_3 position = {0,0,0};
+    Vec_3 direction = {0,0,1};
+    Vec_3 right = {1,0,0};
+    Vec_3 up = {0,1,0};
+    float speed_per_sec = 1;
+    Mat_4 t_matrix;
+
+    Vec_2 old_mouse_pos = {0,0};
 
 };
 

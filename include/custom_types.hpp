@@ -48,16 +48,27 @@ struct Model_data {
 
     std::vector<Triangle_indices> triangle_indices;
 };
+struct Mat_4 {
+    float m[4][4];
 
-struct matrix_4x4{
-    float _11=1,_12=0,_13=0,_14=0,_21=0,_22=1,_23=0,_24=0,_31=0,_32=0,_33=1,_34=0,_41=0,_42=0,_43=0,_44=1;
+    Mat_4 mat_multi(Mat_4 other){
+        Mat_4 result;
+        for(int i = 0 ; i < 4 ; i++ ){
+            for(int j = 0 ; j < 4 ; j++){
+                float sum = 0.0f;
+                for(int k = 0 ; k < 4 ; k++){
+                    sum += m[i][k]*other.m[k][j];
+                }
+                result.m[i][j] = sum ;
+            }
+        }
+        return result;
+    }
 
-    Vec_3 transformation(Vec_3 co_ord){
-        float x , y , z;
-        x = _11*x + _12*y + _13*z + _14;
-        y = _21*x + _22*y + _23*z + _24;
-        z = _31*x + _32*y + _33*z + _34;
-        return (Vec_3){x,y,z};
+    Vec_3 transformation(Vec_3 point){
+        Mat_4 res = mat_multi({point.x,0,0,0,point.y,0,0,0,point.z,0,0,0,1,0,0,0});
+        return {res.m[0][0],res.m[1][0],res.m[2][0]};
     }
 };
+
 #endif

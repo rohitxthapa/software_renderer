@@ -7,10 +7,8 @@ int main() {
 
     engine.parse(file_path);
     engine.init();
-
-
-
-
+    engine.run();
+    engine.close();
 
     return 0;
 }
