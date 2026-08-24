@@ -38,6 +38,8 @@ struct Obj_parser {
                     point.y = std::stof(line);
                     stream>>line;
                     point.z = std::stof(line);
+                    // there has been some problem with measurement , idk what a unit shout be
+                    point.x *= 100; point.y *= 100; point.z *= 100;
 
                     model.vertices.push_back(point);
                 }else if(line == "vt"){
@@ -85,11 +87,14 @@ struct Obj_parser {
     void transform_normal_indices_to_triangle_indices(std::vector<Face_indices> face,Model_data& model){
         int i = 0;
         Face_indices i1 = face.at(i);
+        i1.a--; i1.b--; i1.c--;
         i++;
         Face_indices i2 = face.at(i);
+        i2.a--; i2.b--; i2.c--;
         i++;
         while(i<face.size()){
             Face_indices temp = face.at(i);
+            temp.a--; temp.b--; temp.c--;
             model.triangle_indices.push_back({i1,i2,temp});
             i2 = temp;
             i++;

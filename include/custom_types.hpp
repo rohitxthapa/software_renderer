@@ -49,7 +49,7 @@ struct Model_data {
     std::vector<Triangle_indices> triangle_indices;
 };
 struct Mat_4 {
-    float m[4][4];
+    float m[4][4] = {0};
 
     Mat_4 mat_multi(Mat_4 other){
         Mat_4 result;
@@ -67,6 +67,11 @@ struct Mat_4 {
 
     Vec_3 transformation(Vec_3 point){
         Mat_4 res = mat_multi({point.x,0,0,0,point.y,0,0,0,point.z,0,0,0,1,0,0,0});
+        if(res.m[3][0] != 0.0f){
+            float w = res.m[3][0];
+            // here we are dividing it by w for perspecitve
+            return {res.m[0][0]/w,res.m[1][0]/w,res.m[2][0]/w};
+        }
         return {res.m[0][0],res.m[1][0],res.m[2][0]};
     }
 };

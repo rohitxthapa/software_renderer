@@ -11,6 +11,7 @@
 void handle_input(Camera& camera,float delta,float mouse_lock){
 
     float x , y ;
+    float delta_in_sec = delta/1000;
     if(mouse_lock){
         SDL_MouseButtonFlags mouseState = SDL_GetRelativeMouseState(&x, &y);
         if(!(camera.old_mouse_pos.x == 0 && camera.old_mouse_pos.y == 0)){
@@ -37,22 +38,22 @@ void handle_input(Camera& camera,float delta,float mouse_lock){
 
     const bool* keys = SDL_GetKeyboardState(NULL);
     if(keys[SDL_SCANCODE_W]){
-        camera.position = camera.position.add((camera.direction.scalar_multi(delta)).scalar_multi(camera.speed_per_sec));
+        camera.position = camera.position.add((camera.direction.scalar_multi(delta_in_sec)).scalar_multi(camera.speed_per_sec));
     }
     if(keys[SDL_SCANCODE_S]){
-        camera.position = camera.position.sub((camera.direction.scalar_multi(delta)).scalar_multi(camera.speed_per_sec));
+        camera.position = camera.position.sub((camera.direction.scalar_multi(delta_in_sec)).scalar_multi(camera.speed_per_sec));
     }
     if(keys[SDL_SCANCODE_A]){
-        camera.position = camera.position.sub((camera.right.scalar_multi(delta)).scalar_multi(camera.speed_per_sec));
+        camera.position = camera.position.sub((camera.right.scalar_multi(delta_in_sec)).scalar_multi(camera.speed_per_sec));
     }
     if(keys[SDL_SCANCODE_D]){
-        camera.position = camera.position.add((camera.right.scalar_multi(delta)).scalar_multi(camera.speed_per_sec));
+        camera.position = camera.position.add((camera.right.scalar_multi(delta_in_sec)).scalar_multi(camera.speed_per_sec));
     }
     if(keys[SDL_SCANCODE_SPACE]){
-        camera.position = camera.position.add((camera.up.scalar_multi(delta)).scalar_multi(camera.speed_per_sec));
+        camera.position = camera.position.add((camera.up.scalar_multi(delta_in_sec)).scalar_multi(camera.speed_per_sec));
     }
     if(keys[SDL_SCANCODE_LSHIFT]){
-        camera.position = camera.position.sub((camera.up.scalar_multi(delta)).scalar_multi(camera.speed_per_sec));
+        camera.position = camera.position.sub((camera.up.scalar_multi(delta_in_sec)).scalar_multi(camera.speed_per_sec));
     }
 }
 
