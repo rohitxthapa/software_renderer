@@ -3,6 +3,8 @@
 
 #include <fstream>
 #include <filesystem>
+#include <iostream>
+#include <stdexcept>
 
 #include "custom_types.hpp"
 
@@ -11,7 +13,7 @@ struct Obj_parser {
     Model_data parse(std::filesystem::path& file_path){
         std::ifstream file(file_path); // opening the file
         if(!file.is_open()){
-            throw " model file couldn't open";
+            throw std::runtime_error("model file couldn't open");
         }
         // std::vector<Model_data> models; // the vector that is to be returned
 
@@ -27,53 +29,62 @@ struct Obj_parser {
             //     model.normals.clear();
             // }
             // if(line[0]=='#') continue; // skip comments
-            if(line[0]=='v'){ //vertices
-                std::stringstream stream(line);
+            std::stringstream stream(line);
+            stream>>line;
+            if(line == "v"){
                 stream>>line;
-                if(line == "v"){
-                    stream>>line;
-                    Vec_3 point;
-                    point.x = std::stof(line);
-                    stream>>line;
-                    point.y = std::stof(line);
-                    stream>>line;
-                    point.z = std::stof(line);
-                    // there has been some problem with measurement , idk what a unit shout be
-                    point.x *= 100; point.y *= 100; point.z *= 100;
-
-                    model.vertices.push_back(point);
-                }else if(line == "vt"){
-                    stream>>line;
-                    Vec_2 point;
-                    point.x = std::stof(line);
-                    stream>>line;
-                    point.y = std::stof(line);
-
-                    model.UV_coord.push_back(point);
-                }else if(line == "vn"){
-                    stream>>line;
-                    Vec_3 point;
-                    point.x = std::stof(line);
-                    stream>>line;
-                    point.y = std::stof(line);
-                    stream>>line;
-                    point.z = std::stof(line);
-
-                    model.normals.push_back(point);
-                }
-            }else if(line[0]=='f'){
-                std::stringstream stream(line);
+                Vec_3 point;
+                point.x = std::stof(line);
                 stream>>line;
+                point.y = std::stof(line);
+                stream>>line;
+                point.z = std::stof(line);
+                // there has been some problem with measurement , idk what a unit shout be
+                point.x *= 100; point.y *= 100; point.z *= 100;
 
+                model.vertices.push_back(point);
+            }else if(line == "vt"){
+                stream>>line;
+                Vec_2 point;
+                point.x = std::stof(line);
+                stream>>line;
+                point.y = std::stof(line);
+
+                model.UV_coord.push_back(point);
+            }else if(line == "vn"){
+                stream>>line;
+                Vec_3 point;
+                point.x = std::stof(line);
+                stream>>line;
+                point.y = std::stof(line);
+                stream>>line;
+                point.z = std::stof(line);
+
+                model.normals.push_back(point);
+            }else if(line == "f"){
                 std::vector<Face_indices> face;
-
                 while(stream>>line){
-                    // for now we assume the face have all three part
-                    int a,b,c;
-                    a = line[0]-48;
-                    b = line[2]-48;
-                    c = line[4]-48;
-                    face.push_back({a,b,c});
+                    int ver = 0 , uv = 0 , nor = 0 ;
+                    int flag = 1 ;
+                    for(int i = 0 ; line[i] != '\0' ; i++){
+                        if(line[i] == '/'){
+                            flag++;
+                            continue;
+                        }else{
+                        switch (flag) {
+                            case 1:
+                                ver = ver*10 + line[i] - 48;
+                                break;
+                            case 2:
+                                uv = uv * 10 + line[i] - 48;
+                                break;
+                            case 3:
+                                nor = nor*10 + line[i] - 48;
+                                break;
+                        }
+                    }
+                    }
+                    face.push_back({ver,uv,nor});
                 }
                 model.faces.push_back(face);
                 transform_normal_indices_to_triangle_indices(face,model);
@@ -81,6 +92,7 @@ struct Obj_parser {
         }
         // models.push_back(model);
 
+        file.close();
         return model;
     }
 

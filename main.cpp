@@ -3,7 +3,7 @@
 
 int main() {
     Engine engine ;
-    std::filesystem::path file_path = "../temp_folder/cube.obj";
+    std::filesystem::path file_path = "assets/cube.obj";
 
     engine.parse(file_path);
     engine.init();

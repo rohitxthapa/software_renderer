@@ -5,7 +5,7 @@
 
 class Camera{
     public:
-    Vec_3 position = {0,0,0};
+    Vec_3 position = {1,2,3};
     Vec_3 direction = {0,0,1};
     Vec_3 right = {1,0,0};
     Vec_3 up = {0,1,0};

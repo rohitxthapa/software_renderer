@@ -63,7 +63,6 @@ class Engine{
             Uint64 start_time = SDL_GetPerformanceCounter();
 
             while(running) {
-
                 while(SDL_PollEvent(&events)){
                     switch(events.type){
                         case SDL_EVENT_QUIT :
@@ -112,9 +111,9 @@ class Engine{
 
                 Uint64 current_time = SDL_GetPerformanceCounter();
                 delta = ((double)(current_time - start_time))/SDL_GetPerformanceFrequency();
-                if(delta<16.66667){
-                    SDL_Delay(16.66667-delta);
-                    delta = 16.66667;
+                if(delta<100){
+                    SDL_Delay(100-delta);
+                    delta = 100;
                 }
                 start_time = current_time;
                 add_fps_to_title();

@@ -58,12 +58,14 @@ struct Software_renderer{
         void clear(uint32_t color = 0xFFffffff){
             std::fill(framebuffer.begin(),framebuffer.end(),color);
         }
-        void draw_pixel(int x, int y){
+        void draw_pixel(int y, int x){
         if((x < 0 || x >= width)||(y < 0 || y >= height)) return;
-            framebuffer[y * width * x] = 0xFF00FF00;
+            framebuffer[y * width + x] = 0xFF00FF00;
         }
 
         void render(Model_data& model,Camera& camera){
+            f_model.vertices.clear();
+            f_model.triangle_indices.clear();
             //for this we assume the object lies in center of world space liek in model space
             // so we inplement mode to world later if we were to update the renderer
             std::vector<Vec_3> vertices = to_view_space(model , camera);
@@ -77,7 +79,7 @@ struct Software_renderer{
 
         std::vector<Vec_3> to_view_space(Model_data& model,Camera& camera){
             std::vector<Vec_3> vertices;
-
+            camera.t_matrix.m[0][0] = camera.t_matrix.m[1][1] = camera.t_matrix.m[2][2] = camera.t_matrix.m[3][3] = 1.0f ;
             camera.t_matrix.m[0][3] = -camera.position.x;
             camera.t_matrix.m[1][3] = -camera.position.y;
             camera.t_matrix.m[2][3] = -camera.position.z;
@@ -89,6 +91,7 @@ struct Software_renderer{
 
             for(Vec_3 vertex:model.vertices){
                 vertices.push_back(matrix.transformation(vertex));
+                std::cout<<vertex.x<<std::endl;
             }
             return vertices;
         }
@@ -115,7 +118,10 @@ struct Software_renderer{
                 float y = (1 - V.y)/2;
                 float z = V.z;
 
-                f_model.vertices.push_back({x * width,y * height, z});
+                // std::cout<<x<<" "<<y<<" "<<z<<std::endl;
+
+                // std::cout<<x<<" "<<y<<std::endl;
+                f_model.vertices.push_back({(x + 1) * width,(y + 1) * height, z});
             }
         }
 
@@ -133,7 +139,6 @@ struct Software_renderer{
                 min_y = std::min({std::floor(V0.y),std::floor(V1.y),std::floor(V2.y)});
                 max_y = std::max({std::ceil(V0.y),std::ceil(V1.y),std::ceil(V2.y)});
 
-                std::cout<<V0.x<<" "<<V1.x<<" "<<V2.x<<std::endl;
                 // std::cout<<min_x<<" "<<max_x<<" "<<min_y<<" "<<max_y<<std::endl;
                 for(int jy = min_y ; jy < max_y ; jy++){
                     for(int ix = min_x ; ix < max_x ; ix++ ){
@@ -143,10 +148,10 @@ struct Software_renderer{
                         float E12 = (px - V1.x)*(V2.y - V1.y) - (py - V1.y)*(V2.x - V1.x);
                         float E20 = (px - V2.x)*(V0.y - V2.y) - (py - V2.y)*(V0.x - V2.x);
 
-                        std::cout<<E01<<" "<<E12<<" "<<E20<<std::endl;
-                        if((E01 >=0 && E12 >=0)&& E20 >= 0){
-                            std::cout<<"pixel"<<std::endl;
-                            draw_pixel(px,py);
+                        // std::cout<<E01<<" "<<E12<<" "<<E20<<std::endl;
+                        if((E01 >=0 && E12 >=0&& E20 >= 0) || (E01 <= 0 && E12 <= 0 && E20 <= 0)){
+                            // std::cout<<"pixel"<<std::endl;
+                            draw_pixel(jy,ix);
                         }
                     }
                 }
