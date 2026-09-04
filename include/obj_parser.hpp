@@ -40,7 +40,7 @@ struct Obj_parser {
                 stream>>line;
                 point.z = std::stof(line);
                 // there has been some problem with measurement , idk what a unit shout be
-                point.x *= 100; point.y *= 100; point.z *= 100;
+                // point.x *= 100; point.y *= 100; point.z *= 100;
 
                 model.vertices.push_back(point);
             }else if(line == "vt"){

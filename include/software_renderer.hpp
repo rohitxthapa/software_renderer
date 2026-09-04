@@ -36,7 +36,7 @@ struct Software_renderer{
             }
             FOVy = 90;
             aspect_ratio = (float)width/height;
-            plane.x = 0.1f;
+            plane.x = 1.0f;
             plane.y = 100.0f;
 
             float fov_y_rad = FOVy * (3.14159265f / 180.0f);
@@ -90,8 +90,11 @@ struct Software_renderer{
             matrix = projection_matrix.mat_multi(matrix);
 
             for(Vec_3 vertex:model.vertices){
+                // Vec_3 temp = matrix.transformation(vertex);
+                // if(temp.z >= 0){
                 vertices.push_back(matrix.transformation(vertex));
                 std::cout<<vertex.x<<std::endl;
+                // }
             }
             return vertices;
         }
@@ -99,14 +102,14 @@ struct Software_renderer{
         void clipping(std::vector<Vec_3> model,std::vector<Triangle_indices> tri_ind){
             std::vector<Vec_3> vertices;
             for(Triangle_indices T : tri_ind){
-                bool clip = true;
+                bool clip = false;
                 for(Face_indices i : T.indices){
                     int ind = i.a;
-                    if(-1.0 < model.at(ind).x && model.at(ind).x < 1.0) clip = false;
-                    if(-1.0 < model.at(ind).y && model.at(ind).y < 1.0) clip = false;
-                    if(0.0 < model.at(ind).z && model.at(ind).z < 1.0) clip = false;
+                    if(model.at(ind).x < -1.0 || 1.0 < model.at(ind).x) clip = true;
+                    if(model.at(ind).y < -1.0 || 1.0 < model.at(ind).y) clip = true;
+                    if(model.at(ind).z < 0.0 || 1.0 < model.at(ind).z) clip = true;
                 }
-                if(!clip){
+                if(clip){
                     f_model.triangle_indices.push_back(T);
                 }
             }
@@ -138,6 +141,11 @@ struct Software_renderer{
                 max_x = std::max({std::ceil(V0.x),std::ceil(V1.x),std::ceil(V2.x)});
                 min_y = std::min({std::floor(V0.y),std::floor(V1.y),std::floor(V2.y)});
                 max_y = std::max({std::ceil(V0.y),std::ceil(V1.y),std::ceil(V2.y)});
+
+                min_x = std::max(min_x, 0);
+                max_x = std::min(max_x, width);
+                min_y = std::max(min_y, 0);
+                max_y = std::min(max_y, height);
 
                 // std::cout<<min_x<<" "<<max_x<<" "<<min_y<<" "<<max_y<<std::endl;
                 for(int jy = min_y ; jy < max_y ; jy++){

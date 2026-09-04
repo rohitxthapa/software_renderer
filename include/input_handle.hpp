@@ -15,7 +15,7 @@ void handle_input(Camera& camera,float delta,float mouse_lock){
     if(mouse_lock){
         // SDL_MouseButtonFlags mouseState = SDL_GetRelativeMouseState(&x, &y);
         SDL_MouseButtonFlags mouseState = SDL_GetMouseState(&x,&y);
-        if(!(x == camera.old_mouse_pos.x && y == camera.old_mouse_pos.y)){}
+        if(!(x == camera.old_mouse_pos.x && y == camera.old_mouse_pos.y)){
             camera.change = camera.change | 0x00000002;
             float dx , dy ;
             dx = x - camera.old_mouse_pos.x;
@@ -30,6 +30,7 @@ void handle_input(Camera& camera,float delta,float mouse_lock){
 
         camera.old_mouse_pos.x = x ;
         camera.old_mouse_pos.y = y ;
+    }
     }
 
     camera.right = camera.direction.cross({0,1,0});
