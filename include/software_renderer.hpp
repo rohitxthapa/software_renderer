@@ -34,7 +34,7 @@ struct Software_renderer{
             if(!surface){
                 std::cerr<<"sdl_getwindowsurface failed : " << SDL_GetError()<<std::endl;
             }
-            FOVy = 60;
+            FOVy = 90;
             aspect_ratio = (float)width/height;
             plane.x = 0.1f;
             plane.y = 100.0f;
@@ -121,7 +121,7 @@ struct Software_renderer{
                 // std::cout<<x<<" "<<y<<" "<<z<<std::endl;
 
                 // std::cout<<x<<" "<<y<<std::endl;
-                f_model.vertices.push_back({(x + 1) * width,(y + 1) * height, z});
+                f_model.vertices.push_back({x * width,y * height, z});
             }
         }
 

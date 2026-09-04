@@ -92,28 +92,30 @@ class Engine{
                     }
 
                 handle_input(camera,delta,mouse_lock);
+                if(camera.change){
+                    renderer.clear();
+                    renderer.render(res_manager.get_model_refrence(),camera);
 
-                renderer.clear();
-                renderer.render(res_manager.get_model_refrence(),camera);
-
-                if(surface->pitch == window_width*4){
-                    std::memcpy(surface->pixels,renderer.framebuffer.data(),window_width*window_height*4);
-                }else{
-                    std::cerr<<"surface pitch different from width bytes";
-                    for(int i = 0 ; i < window_height ; i++ ){
-                        void* dst = (Uint8*)surface->pixels + (surface->pitch*i);
-                        void* src = renderer.framebuffer.data() + i * window_width * 4;
-                        std::memcpy(dst,src,window_width*4);
+                    if(surface->pitch == window_width*4){
+                        std::memcpy(surface->pixels,renderer.framebuffer.data(),window_width*window_height*4);
+                    }else{
+                        std::cerr<<"surface pitch different from width bytes";
+                        for(int i = 0 ; i < window_height ; i++ ){
+                            void* dst = (Uint8*)surface->pixels + (surface->pitch*i);
+                            void* src = renderer.framebuffer.data() + i * window_width * 4;
+                            std::memcpy(dst,src,window_width*4);
+                        }
                     }
-                }
 
-                SDL_UpdateWindowSurface(window);
+                    SDL_UpdateWindowSurface(window);
+                    camera.change = 0;
+                }
 
                 Uint64 current_time = SDL_GetPerformanceCounter();
                 delta = ((double)(current_time - start_time))/SDL_GetPerformanceFrequency();
-                if(delta<100){
-                    SDL_Delay(100-delta);
-                    delta = 100;
+                if(delta<16.666667){
+                    SDL_Delay(16.666667-delta);
+                    delta = 16.666667;
                 }
                 start_time = current_time;
                 add_fps_to_title();
