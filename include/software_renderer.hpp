@@ -34,9 +34,9 @@ struct Software_renderer{
             if(!surface){
                 std::cerr<<"sdl_getwindowsurface failed : " << SDL_GetError()<<std::endl;
             }
-            FOVy = 90;
+            FOVy = 60;
             aspect_ratio = (float)width/height;
-            plane.x = 1.0f;
+            plane.x = 0.1f;
             plane.y = 100.0f;
 
             float fov_y_rad = FOVy * (3.14159265f / 180.0f);
@@ -60,7 +60,33 @@ struct Software_renderer{
         }
         void draw_pixel(int y, int x){
         if((x < 0 || x >= width)||(y < 0 || y >= height)) return;
-            framebuffer[y * width + x] = 0xFF00FF00;
+            framebuffer[y * width + x] = 0xFF00FFFF;
+        }
+
+        void draw_line(int x0 , int y0 , int x1 , int y1){
+            int dx = std::abs(x1 - x0);
+            int dy = std::abs(y1 - y0);
+
+            int sx = (x0 < x1) ? 1 : -1;
+            int sy = (y0 < y1) ? 1 : -1;
+
+            int err = dx - dy;
+
+            while (true) {
+                draw_pixel(x0, y0);
+                if (x0 == x1 && y0 == y1) break;
+
+                int e2 = 2 * err;
+
+                if (e2 > -dy) {
+                    err -= dy;
+                    x0 += sx;
+                }
+                if (e2 < dx) {
+                    err += dx;
+                    y0 += sy;
+                }
+            }
         }
 
         void render(Model_data& model,Camera& camera){
@@ -71,10 +97,12 @@ struct Software_renderer{
             std::vector<Vec_3> vertices = to_view_space(model , camera);
 
             clipping(vertices,model.triangle_indices);
+            f_model.faces = model.faces;
 
             viewport(vertices);
 
-            rasterization();
+            // rasterization();
+            wireframe();
         }
 
         std::vector<Vec_3> to_view_space(Model_data& model,Camera& camera){
@@ -93,7 +121,7 @@ struct Software_renderer{
                 // Vec_3 temp = matrix.transformation(vertex);
                 // if(temp.z >= 0){
                 vertices.push_back(matrix.transformation(vertex));
-                std::cout<<vertex.x<<std::endl;
+                // std::cout<<vertex.x<<std::endl;
                 // }
             }
             return vertices;
@@ -126,6 +154,21 @@ struct Software_renderer{
                 // std::cout<<x<<" "<<y<<std::endl;
                 f_model.vertices.push_back({x * width,y * height, z});
             }
+        }
+
+        void wireframe(){
+            for(Triangle_indices T:f_model.triangle_indices){
+
+                auto& A = f_model.vertices.at(T.indices[0].a);
+                auto& B = f_model.vertices.at(T.indices[1].a);
+                auto& C = f_model.vertices.at(T.indices[2].a);
+
+                draw_line(A.x,A.y,B.x,B.y);
+                draw_line(B.x,B.y,C.x,C.y);
+                draw_line(C.x,C.y,A.x,A.y);
+
+            }
+
         }
 
         void rasterization(){
