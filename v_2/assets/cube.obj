@@ -1,0 +1,99 @@
+# ============================================================
+# cube.obj — minimal reference model demonstrating (almost)
+# every element of the Wavefront OBJ format.
+# Geometry: a simple 2x2x2 cube (6 quad faces, 8 vertices)
+# kept deliberately low-poly so you can trace each line by hand.
+# ============================================================
+
+# --- Material library reference ---
+# Tells the parser to load material definitions from cube.mtl.
+# Can appear anywhere before the first "usemtl" that needs it.
+mtllib cube.mtl
+
+# --- Object name ---
+# Starts a new named object. Everything below belongs to "Cube"
+# until the next "o" line (if any appeared).
+o Cube
+
+# --- Vertex positions: v x y z [w] ---
+# w is optional (defaults to 1.0), used only for rational
+# curves/surfaces — you'll almost never see it in plain meshes.
+v -1.000000 -1.000000  1.000000
+v  1.000000 -1.000000  1.000000
+v  1.000000  1.000000  1.000000
+v -1.000000  1.000000  1.000000
+v -1.000000 -1.000000 -1.000000
+v  1.000000 -1.000000 -1.000000
+v  1.000000  1.000000 -1.000000
+v -1.000000  1.000000 -1.000000
+
+# --- Texture coordinates: vt u [v] [w] ---
+# Standard 2D UVs for a quad corner, reused on every face.
+vt 0.000000 0.000000
+vt 1.000000 0.000000
+vt 1.000000 1.000000
+vt 0.000000 1.000000
+
+# --- Vertex normals: vn x y z ---
+# One flat normal per face (not per-vertex), so shading comes
+# out faceted rather than smooth.
+vn  0.000000  0.000000  1.000000
+vn  0.000000  0.000000 -1.000000
+vn  1.000000  0.000000  0.000000
+vn -1.000000  0.000000  0.000000
+vn  0.000000  1.000000  0.000000
+vn  0.000000 -1.000000  0.000000
+
+# --- Material assignment ---
+# Everything from here on uses "Plastic", defined in cube.mtl.
+usemtl Plastic
+
+# --- Smoothing group ---
+# "off" (same as "s 0") disables normal interpolation between
+# faces, matching the one-normal-per-face setup above.
+s off
+
+# --- Groups + faces: g name / f v/vt/vn v/vt/vn ... ---
+# Each face lists its corners as v/vt/vn index triples.
+# OBJ indices start at 1, not 0 — the #1 gotcha when parsing.
+
+g front
+f 1/1/1 2/2/1 3/3/1 4/4/1
+
+g back
+f 6/1/2 5/2/2 8/3/2 7/4/2
+
+g right
+f 2/1/3 6/2/3 7/3/3 3/4/3
+
+g left
+f 5/1/4 1/2/4 4/3/4 8/4/4
+
+g top
+f 4/1/5 3/2/5 7/3/5 8/4/5
+
+g bottom
+f 1/1/6 5/2/6 6/3/6 2/4/6
+
+# --- Line element: l v1 v2 ... ---
+# Optional polyline feature, rare in meshes but valid OBJ.
+# Traces a closed loop around the front face's edges.
+g front_outline
+l 1 2 3 4 1
+
+# --- Point element: p v1 v2 ... ---
+# Marks individual vertices as standalone points.
+g corner_markers
+p 1 3 6 8
+
+# ------------------------------------------------------------
+# Elements that exist in the spec but are omitted here because
+# they're rare and would only add noise:
+#   vp                – parameter-space vertices (free-form curves)
+#   cstype/deg/bmat/step/curv/curv2/surf – free-form geometry
+#   con/trim/hole/scrv/sp/end            – curve/surface trim data
+#   lod, shadow_obj, trace_obj, ctech, stech, c_interp, d_interp
+# A parser that handles v / vt / vn / f / g / o / s / mtllib /
+# usemtl / l / p / comments will read the vast majority of
+# real-world OBJ files.
+# ------------------------------------------------------------
