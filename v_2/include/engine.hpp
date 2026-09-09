@@ -18,9 +18,23 @@ class Engine{
 
 
     public :
-        void init();
+        void init(){
+            window_interface.init();
+            resource.init();
+            renderer.init();
+            camera.init();
+            user_interface.init();
+        }
+
         void run();
-        void close();
+
+        void close(){
+            camera.close();
+            renderer.close();
+            resource.close();
+            user_interface.close();
+            window_interface.close();
+        }
 
 
 };

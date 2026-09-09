@@ -10,6 +10,10 @@ struct Int3{
     int x , y , z;
 };
 
+struct Float2 {
+    float x , y;
+};
+
 constexpr float PI = 3.14159265358979323846f;
 inline float radians(float degrees) { return degrees * (PI / 180.0f); }
 
