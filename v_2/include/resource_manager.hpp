@@ -55,6 +55,8 @@ class Resource_manager{
     std::unordered_map<std::string,Model_data> models;
 
     void init();
+    // as far a i know there is no need for run but i think we may need a function which runs
+    // everytime per few ticks and checks if there are model to load or other stuff
     void run();
     void close();
 };
