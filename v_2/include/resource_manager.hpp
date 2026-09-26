@@ -53,6 +53,7 @@ struct Model_data {
 class Resource_manager{
   public :
     std::unordered_map<std::string,Model_data> models;
+    Parser parser;
 
     void init();
     // as far a i know there is no need for run but i think we may need a function which runs

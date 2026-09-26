@@ -4,19 +4,18 @@
 #include "resource_manager.hpp"
 #include "renderer.hpp"
 #include "camera.hpp"
-#include "window_interface.hpp"
-#include "user_interface.hpp"
+#include "interface.hpp"
+#include "helper.hpp"
 
 
 class Engine{
     private :
-        Resource_manager resource;
+        Resource_manager resource_manager;
         Renderer renderer;
         Camera camera;
-        Window_interface window_interface;
-        User_interface user_interface;
+        Interface interface;
+        Helper helper;
         double delta;
-        bool mouse_lock;
 
 
     public :

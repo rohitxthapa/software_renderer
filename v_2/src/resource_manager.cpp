@@ -1,8 +1,6 @@
 #include "../include/resource_manager.hpp"
 #include "../include/parser.hpp"
-#include "../include/custom_math.hpp"
 
-#include <unordered_map>
 #include <vector>
 
 void Mesh_data::clear(){
@@ -21,6 +19,9 @@ void Model_data::clear(){
     model_ani.clear();
 }
 
-void Resource_manager::init(){}
+void Resource_manager::init(){
+    std::filesystem::path file_path = "../assets/cube.obj";
+    parser.parse(file_path,this->models);
+}
 void Resource_manager::run(){}
 void Resource_manager::close(){}

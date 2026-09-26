@@ -3,7 +3,8 @@
 
 #include <SDL3/SDL.h>
 #include <string>
-#include <iostream>
+#include <vector>
+#include "custom_math.hpp"
 
 class Window_interface {
 private:
@@ -15,6 +16,8 @@ private:
 
 public:
     void init();
+    Int2 get_window_size();
+    void display(std::vector<uint32_t> framebuffer);
     void add_fps_to_title(int fps);
     void close();
 };

@@ -6,6 +6,10 @@
 
 // used ai for math library, but i will look at the inner working of the fuctions
 
+struct Int2{
+    int x, y;
+};
+
 struct Int3{
     int x , y , z;
 };
@@ -98,7 +102,7 @@ inline Float4x4 get_translate_matrix(const Float4x4& m, const Float3& v) {
 // here , but i am not doing that right now because i dont know if we will pass degree , radion
 // or i have heard something call quaternion is used and is better ( idk how and what is it but i will implement it later)
 
-inline Float4x4 get_view_matrix(const Float3& eye, const Float3& f, const Float3& up) {
+inline Float4x4 get_view_matrix(const Float3& eye, const Float3& f, const Float3& up = {0,1,0}) {
     Float3 s = normalize(cross(f, up));
     Float3 u = cross(s, f);
 
