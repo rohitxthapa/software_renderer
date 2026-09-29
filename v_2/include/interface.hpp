@@ -1,6 +1,7 @@
 #ifndef _INTERFACE_
 #define _INTERFACE_
 
+#include <SDL3/SDL.h>
 #include "camera.hpp"
 #include "custom_math.hpp"
 #include "user_interface.hpp"
@@ -19,8 +20,10 @@ class Interface{
         int fps;
         Camera camera;
         Input_state input_state;
+        SDL_Event events;
 
     public :
+        bool running;
         void init();
 
         Int2 get_window_size();
@@ -28,6 +31,8 @@ class Interface{
         void update_camera();
 
         void update(std::vector<uint32_t> framebuffer,double delta,Camera camera);
+
+        void loop();
 
         void run();
 

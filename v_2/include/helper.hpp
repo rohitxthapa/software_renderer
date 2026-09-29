@@ -14,6 +14,7 @@ class Helper{
     public :
         void init ();
         void calculate_delta();
+        void wait();
         double get_delta();
 };
 

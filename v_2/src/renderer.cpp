@@ -1,5 +1,4 @@
 #include "../include/renderer.hpp"
-#include <complex>
 #include <cstdint>
 
 void Renderer::init(Int2 win_size,Float3 fovy_near_far_plane){
@@ -33,7 +32,8 @@ void Renderer::clear(uint32_t color){
 }
 
 void inline Renderer::draw_pixel(int x , int y, uint32_t color = 0xFF000000){
-    framebuffer[y * width + x] = color;
+    // we are checking be cause our device coordinates are in float and when we convert them to int there is some problem
+    if(y < height && x < width) framebuffer[y * width + x] = color;
 }
 
 void Renderer::draw_line(int x0, int y0, int x1, int y1, uint32_t color = 0xFFFF0000){
@@ -103,21 +103,21 @@ void Renderer::viewport(std::vector<Float4> vertices){
 }
 
 void Renderer::wireframe(){
-    for(Triangle T : mmodel.model_mesh.triangles){
+    for(Triangle &T : mmodel.model_mesh.triangles){
         auto& A = mmodel.model_mesh.vertices.at(T.vertex_indices.x);
         auto& B = mmodel.model_mesh.vertices.at(T.vertex_indices.y);
         auto& C = mmodel.model_mesh.vertices.at(T.vertex_indices.z);
 
-        draw_line(A.x,A.y,B.x,B.y);
-        draw_line(B.x,B.y,C.x,C.y);
-        draw_line(C.x,C.y,A.x,A.y);
+        draw_line(std::round(A.x),std::round(A.y),std::round(B.x),std::round(B.y));
+        draw_line(std::round(B.x),std::round(B.y),std::round(C.x),std::round(C.y));
+        draw_line(std::round(C.x),std::round(C.y),std::round(A.x),std::round(A.y));
 
     }
 }
 
 void Renderer::rasterization(){
 
-    for(Triangle T:mmodel.model_mesh.triangles){
+    for(Triangle &T:mmodel.model_mesh.triangles){
         Float3 V0, V1, V2;
         V0 = mmodel.model_mesh.vertices.at(T.vertex_indices.x);
         V1 = mmodel.model_mesh.vertices.at(T.vertex_indices.y);
@@ -157,7 +157,7 @@ void Renderer::render(Camera &camera,Resource_manager &res_manager){
     // here lets take only first model , i still have to put the postion datamember in mesh_data class and also i should
     // put dta members that stores the minimum and maximum x and y or maybe the positon could do the part for culling
     // before transformation
-    Model_data pmodel = res_manager.models.at(0);
+    Model_data pmodel = res_manager.models["Cube"];
     mmodel.model_mesh.clear();
 
     std::vector<Float4> vertices = to_view_space(pmodel , camera);
@@ -169,9 +169,10 @@ void Renderer::render(Camera &camera,Resource_manager &res_manager){
     rasterization();
     wireframe();
 
-
 }
 
 std::vector<uint32_t> Renderer::get_framebuffer(){
     return framebuffer;
 }
+
+void Renderer::close(){}

@@ -95,7 +95,7 @@ void Parser::parse_obj(const std::filesystem::path &file_path,std::unordered_map
       Face face;
 
       while (stream >> line) {
-        int ver = -1, uv = -1, nor = -1;
+        int ver = 0, uv = 0, nor = 0;
         int flag = 1;
         for (int i = 0; line[i] != '\0'; i++) {
           if (line[i] == '/') {
@@ -115,9 +115,9 @@ void Parser::parse_obj(const std::filesystem::path &file_path,std::unordered_map
             }
           }
         }
-        face.vertex_indices.push_back(ver);
-        face.UV_indices.push_back(uv);
-        face.normal_indices.push_back(nor);
+        face.vertex_indices.push_back(ver-1);
+        face.UV_indices.push_back(uv-1);
+        face.normal_indices.push_back(nor-1);
       }
       temp.model_mesh.faces.push_back(face);
 

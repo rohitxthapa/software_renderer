@@ -1,7 +1,5 @@
 #include "../include/engine.hpp"
-#include <SDL3/SDL_events.h>
-#include <SDL3/SDL_mouse.h>
-#include <SDL3/SDL_timer.h>
+#include <iostream>
 
 void Engine::init(){
     interface.init();
@@ -14,31 +12,19 @@ void Engine::init(){
 
 void Engine::run(){
 
-bool running = true;
-Uint64 start_time = SDL_GetPerformanceCounter();
-SDL_Event events;
-
 helper.init();
-while(running) {
-    while(SDL_PollEvent(&events)){
-        // maybe i should put this part and input handle in another file and
-        // keep a state machine
-        switch(events.type){
-            case SDL_EVENT_QUIT :
-                running = false;
-                break;
-        }
-    }
-
+while(interface.running) {
+    // interface.loop();
     renderer.clear();
     renderer.render(camera,resource_manager);
-
-    helper.calculate_delta();
-    delta = helper.get_delta();
 
     interface.update(renderer.get_framebuffer(),delta,camera);
     interface.run();
 
+
+    helper.calculate_delta();
+    delta = helper.get_delta();
+    helper.wait();
 }
 
 }

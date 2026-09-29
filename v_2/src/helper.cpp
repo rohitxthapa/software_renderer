@@ -12,6 +12,11 @@ void Helper::calculate_delta(){
     start = end;
 }
 
+void Helper::wait(){
+    SDL_Delay(16.6666667 - delta);
+    delta  = 16.6666667;
+}
+
 double Helper::get_delta(){
     return delta;
 }
