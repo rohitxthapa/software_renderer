@@ -31,8 +31,7 @@ Input_state User_interface::get_input_state(){
     return state;
 }
 void User_interface::handle_input(){
-    int *numkeys;
-    const bool* keys = SDL_GetKeyboardState(numkeys);
+    const bool* keys = SDL_GetKeyboardState(nullptr);
 
     if(keys[SDL_SCANCODE_W]) state.key_w = true;
     if(keys[SDL_SCANCODE_A]) state.key_a = true;

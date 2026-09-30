@@ -32,8 +32,6 @@ class Interface{
 
         void update(std::vector<uint32_t> framebuffer,double delta,Camera camera);
 
-        void loop();
-
         void run();
 
         void close();

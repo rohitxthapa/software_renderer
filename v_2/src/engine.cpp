@@ -14,7 +14,6 @@ void Engine::run(){
 
 helper.init();
 while(interface.running) {
-    // interface.loop();
     renderer.clear();
     renderer.render(camera,resource_manager);
 

@@ -13,11 +13,24 @@ file(GLOB_RECURSE IMGUI_FILES
 "dependency/imgui/*.cpp"
 )
 
+message(STATUS "Found Source Files: ${SRC_FILES}")
+message(STATUS "Found ImGui Files: ${IMGUI_FILES}")
+
 add_executable(renderer ${SRC_FILES} ${IMGUI_FILES})
 
 target_include_directories(renderer PRIVATE
 include
 dependency/imgui
+)
+
+target_compile_options(renderer PRIVATE
+    -Wall
+    -Wextra
+    -fsanitize=address,undefined
+)
+
+target_link_options(renderer PRIVATE
+    -fsanitize=address,undefined
 )
 
 target_link_libraries(renderer PRIVATE

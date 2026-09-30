@@ -28,7 +28,7 @@ void Interface::update_camera(){
     if(input_state.key_w){}
 }
 
-void Interface::loop(){
+void Interface::run(){
     while(SDL_PollEvent(&events)){
         switch(events.type){
             case SDL_EVENT_QUIT :
@@ -36,11 +36,6 @@ void Interface::loop(){
                 break;
         }
     }
-
-}
-
-void Interface::run(){
-    loop();
     user_interface.run();
     input_state = user_interface.get_input_state();
     window_interface.add_fps_to_title(fps);
