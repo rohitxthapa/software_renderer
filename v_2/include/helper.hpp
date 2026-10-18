@@ -10,8 +10,14 @@ class Helper{
         uint64_t start;
         uint64_t end;
 
+    public:
+        double frame_time;
+        double wait_frame_time;
+        double frame_time_100;
+        double frame_time_60;
+        double frame_time_30;
+        float fps;
 
-    public :
         void init ();
         void calculate_delta();
         void wait();

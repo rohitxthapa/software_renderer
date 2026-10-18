@@ -1,5 +1,6 @@
 #include "../include/renderer.hpp"
 #include <cstdint>
+#include <iostream>
 
 void Renderer::init(Int2 win_size,Float3 fovy_near_far_plane){
     this->width = win_size.x;
@@ -33,7 +34,7 @@ void Renderer::clear(uint32_t color){
 
 void inline Renderer::draw_pixel(int x , int y, uint32_t color = 0xFF000000){
     // we are checking be cause our device coordinates are in float and when we convert them to int there is some problem
-    if(y < height && x < width) framebuffer[y * width + x] = color;
+    if((y < height && x < width) && (y >= 0 && x >= 0)) framebuffer[y * width + x] = color;
 }
 
 void Renderer::draw_line(int x0, int y0, int x1, int y1, uint32_t color = 0xFFFF0000){

@@ -2,7 +2,10 @@
 #define _USER_INTERFACE_
 
 #include <SDL3/SDL.h>
+#include <SDL3/SDL_render.h>
+#include <cstdint>
 #include <string>
+#include <vector>
 
 struct Input_state {
     bool key_w;
@@ -23,16 +26,17 @@ struct Input_state {
 class User_interface {
     private:
         SDL_Window* window ;
-        SDL_Renderer* renderer;
-        int win_width;
-        int win_height;
+        int width;
+        int height;
         Input_state state {0};
+        SDL_Renderer *renderer;
+        SDL_Texture *texture;
 
     public:
-        void init();
+        void init(SDL_Window *window,int w , int h);
         Input_state get_input_state();
         void handle_input();
-        void run();
+        void run(const std::vector<uint32_t> &framebuffer);
         void close();
 };
 

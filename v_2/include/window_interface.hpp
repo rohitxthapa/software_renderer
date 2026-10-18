@@ -15,10 +15,8 @@ private:
     std::string title;
 
 public:
-    void init();
-    Int2 get_window_size();
+    void init(SDL_Window *window,SDL_Surface *surface,int w,int h);
     void display(std::vector<uint32_t> framebuffer);
-    void add_fps_to_title(int fps);
     void close();
 };
 

@@ -8,8 +8,8 @@ void Camera::init(){
     right = {1,0,0};
     speed_per_sec = 3;
     matrix.m = {1,0,0,0,0,1,0,0,0,0,1,0,0,0,0,1};
-    fovy = 90;
-    near_plane = 0.1f;
+    fovy = 80;
+    near_plane = 1.0f;
     far_plane = 100.0f;
 }
 

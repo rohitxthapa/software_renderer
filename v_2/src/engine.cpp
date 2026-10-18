@@ -7,7 +7,7 @@ void Engine::init(){
     camera.init();
     renderer.init(interface.get_window_size(),camera.get_fovy_near_far_plane());
 
-    delta = 16.66666667;
+    delta = 10;
 }
 
 void Engine::run(){
@@ -22,8 +22,11 @@ while(interface.running) {
 
 
     helper.calculate_delta();
-    delta = helper.get_delta();
     helper.wait();
+    delta = helper.get_delta();
+    helper.frame_time *= 10000000000.0;
+    helper.frame_time /= 10000000000.0;
+    std::cerr << "Frame Time : "<< helper.frame_time <<" Fps :"<< helper.fps << std::endl;
 }
 
 }

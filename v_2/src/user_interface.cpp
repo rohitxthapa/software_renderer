@@ -7,12 +7,17 @@
 #include <SDL3/SDL_render.h>
 #include <SDL3/SDL_scancode.h>
 #include <SDL3/SDL_video.h>
+#include <cstdint>
+#include <iostream>
+#include <vector>
 
-void User_interface::init(){
-    win_width = 640;
-    win_height = 360;
-    window = SDL_CreateWindow("MENU", win_width,win_height,0);
-    renderer = SDL_CreateRenderer(window,NULL);
+void User_interface::init(SDL_Window *window,int w, int h){
+    this->window = window;
+    width = w;
+    height = h;
+
+    renderer = SDL_CreateRenderer(window,nullptr);
+    if(renderer==nullptr) std::cout<<"sdl_renderer not created for imgui"<<std::endl;
 
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -26,6 +31,7 @@ void User_interface::init(){
     ImGui_ImplSDL3_InitForSDLRenderer(window,renderer);
     ImGui_ImplSDLRenderer3_Init(renderer);
 
+    texture = SDL_CreateTexture(renderer,SDL_PIXELFORMAT_RGBA8888,SDL_TEXTUREACCESS_STREAMING,width,height);
 }
 Input_state User_interface::get_input_state(){
     return state;
@@ -48,8 +54,11 @@ void User_interface::handle_input(){
 
     SDL_GetRelativeMouseState(&state.rel_mousex,&state.rel_mousey);
 }
-void User_interface::run(){
+void User_interface::run(const std::vector<uint32_t> &framebuffer){
     handle_input();
+
+    SDL_UpdateTexture(texture, nullptr, framebuffer.data(), width * sizeof(uint32_t));
+
     ImGui_ImplSDLRenderer3_NewFrame();
     ImGui_ImplSDL3_NewFrame();
     ImGui::NewFrame();
@@ -58,6 +67,11 @@ void User_interface::run(){
     ImGui::Text("this is a brare minimum ImGui + SDL3 setup.");
     static float color[4] = {0.1f,0.2f,0.3f,1.0f};
     ImGui::ColorEdit4("background Color",color);
+
+    ImTextureID texture_id = (ImTextureID)(intptr_t)texture;
+
+    ImGui::Image(texture_id, ImVec2(width, height));
+
     ImGui::End();
 
     ImGui::Render();
@@ -77,7 +91,7 @@ void User_interface::close(){
     ImGui_ImplSDL3_Shutdown();
     ImGui::DestroyContext();
 
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
+    // SDL_DestroyRenderer(renderer);
+    // SDL_DestroyWindow(window);
+    // SDL_Quit();
 }
