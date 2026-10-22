@@ -17,6 +17,10 @@ class Engine{
         Helper helper;
         double delta;
 
+        Input_state input_state;
+        Render_state render_state;
+        System_state system_state;
+
 
     public :
         void init();

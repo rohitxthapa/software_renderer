@@ -2,6 +2,7 @@
 #define _CAMERA_
 
 #include "custom_math.hpp"
+#include "state_type.hpp"
 
 class Camera {
     public :
@@ -11,14 +12,11 @@ class Camera {
         Float3 up ;
         float speed_per_sec ;
         Float4x4 matrix;
-        float fovy;
-        float near_plane;
-        float far_plane;
-        bool lock;
+
 
         void init();
 
-        Float3 get_fovy_near_far_plane();
+        void update(Input_state &input_state ,Render_state &render_state ,float delta);
 
         void close();
 };

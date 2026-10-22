@@ -13,17 +13,18 @@ void Helper::init(){
 
 void Helper::calculate_delta(){
     end = SDL_GetPerformanceCounter();
-    delta = ((double)end - start)/SDL_GetPerformanceFrequency();
+    delta = (1000.0 * (end - start))/SDL_GetPerformanceFrequency();
     start = end;
-    fps = 1000/delta;
+
     frame_time = delta;
+    fps = 1000.0/delta;
 }
 
 void Helper::wait(){
     if(delta < wait_frame_time){
     SDL_Delay(wait_frame_time - delta);
     delta = wait_frame_time;
-    fps = 1000/delta;
+    fps = 1000.0/delta;
     }
 }
 

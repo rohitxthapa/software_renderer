@@ -26,6 +26,7 @@ dependency/imgui
 target_compile_options(renderer PRIVATE
     -Wall
     -Wextra
+    -Og
     -fsanitize=address,undefined
 )
 

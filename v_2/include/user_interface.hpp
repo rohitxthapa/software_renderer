@@ -6,35 +6,24 @@
 #include <cstdint>
 #include <string>
 #include <vector>
-
-struct Input_state {
-    bool key_w;
-    bool key_a;
-    bool key_s;
-    bool key_d;
-    bool key_space;
-    bool key_shift;
-    bool key_tab;
-
-    bool mouse_left_key;
-    bool mouse_right_key;
-    float mousex , mousey;
-    float rel_mousex , rel_mousey;
-
-};
+#include "state_type.hpp"
 
 class User_interface {
     private:
-        SDL_Window* window ;
+        SDL_Window *window ;
         int width;
         int height;
-        Input_state state {0};
         SDL_Renderer *renderer;
         SDL_Texture *texture;
+        SDL_Event events;
 
     public:
-        void init(SDL_Window *window,int w , int h);
-        Input_state get_input_state();
+        Input_state *input_state;
+        Render_state *render_state;
+        System_state *system_state;
+
+        void init(SDL_Window *window,int w , int h,Input_state *i_state,Render_state *r_state,System_state *s_state);
+        void clear_input();
         void handle_input();
         void run(const std::vector<uint32_t> &framebuffer);
         void close();

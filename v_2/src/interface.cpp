@@ -2,65 +2,47 @@
 #include <SDL3/SDL_events.h>
 #include <cstdint>
 #include <vector>
+#include <cstdint>
+#include <cstring>
 
-
-void Interface::init(){
-    width = 1280;
-    height = 720;
+void Interface::init(Input_state *i_state,Render_state *r_state,System_state *s_state){
     title = "renderer_fps_00000000";
+    input_state = *i_state;
+    render_state = *r_state;
+    system_state = *s_state;
 
     if(!SDL_Init(SDL_INIT_VIDEO)) std::cerr<<"SDL couldn't initialize";
 
-    window = SDL_CreateWindow(title.data(),width,height,0);
+    window = SDL_CreateWindow(title.data(),render_state.width,render_state.height,0);
     if(window == nullptr) std::cerr<<"window == nullptr"<<std::endl;
 
-    surface = SDL_GetWindowSurface(window);
-    if(surface == nullptr) std::cerr<<"surface == nullptr"<<std::endl;
+    // surface = SDL_GetWindowSurface(window);
+    // if(surface == nullptr) std::cerr<<"surface == nullptr"<<std::endl;
 
-    window_interface.init(window,surface,width,height);
-    user_interface.init(window,width,height);
-    running = true;
+    user_interface.init(window,render_state.width,render_state.height,&input_state,&render_state,&system_state);
 }
 
-Int2 Interface::get_window_size(){
-    return {width,height};
+void Interface::get_states(Input_state *i_state,Render_state *r_state,System_state *s_state){
+    *i_state = input_state;
+    *r_state = render_state;
+    *s_state = system_state;
+
+    input_state = {0};
+    render_state.changed = false;
 }
 
-void Interface::update(std::vector<uint32_t> framebuffer,double delta,Camera camera){
+void Interface::update(std::vector<uint32_t> framebuffer,double delta){
     this->framebuffer = framebuffer;
-    this->camera = camera;
     this->delta = delta;
     fps = (1000/delta);
 
 }
 
-void Interface::update_camera(){
-    if(camera.lock){
-        // here will come the part that revolve the world around camera
-    }
-    // if(input_state.key_w){}
-}
-
 void Interface::run(){
-    while(SDL_PollEvent(&events)){
-        if(events.type == SDL_EVENT_QUIT) running = false ;
-        switch(events.type){
-            case SDL_EVENT_QUIT :
-            case SDL_EVENT_WINDOW_CLOSE_REQUESTED :
-                running = false;
-                break;
-            case SDL_EVENT_KEY_DOWN :
-                std::cout<<"key pressed"<<std::endl;
-                break;
-        }
-    }
     add_fps_to_title();
-    window_interface.display(framebuffer);
     user_interface.run(framebuffer);
-    input_state = user_interface.get_input_state();
-
-    update_camera();
 }
+
 
 void Interface::add_fps_to_title(){
     for(int i = 20 ; i > 12 ; i--){
@@ -71,7 +53,24 @@ void Interface::add_fps_to_title(){
     SDL_SetWindowTitle(window,title.data());
 }
 
+// void Interface::surface_display(std::vector<uint32_t> framebuffer){
+    //     // this is so if i could create full fetched renderer , use that renderer for imgui too and use surface to display
+//     if(surface->pitch == width*4){
+//         std::memcpy(surface->pixels,framebuffer.data(),width*height*4);
+//     }else{
+//         std::cerr<<"surface pitch is differnet from width bytes"<<std::endl;
+//         for(int i = 0 ; i < height ; i++ ){
+//             void* dst = (uint8_t*)surface->pixels + (surface->pitch*i);
+//             void* src = framebuffer.data() + i * width * 4;
+//             std::memcpy(dst,src,width*4);
+//         }
+//     }
+//     SDL_UpdateWindowSurface(window);
+// }
+
 void Interface::close(){
-    window_interface.close();
-    // user_interface.close();
+    user_interface.close();
+    // SDL_DestroySurface(surface);
+    SDL_DestroyWindow(window);
+    SDL_Quit();
 }

@@ -2,10 +2,9 @@
 #define _INTERFACE_
 
 #include <SDL3/SDL.h>
-#include "camera.hpp"
 #include "custom_math.hpp"
 #include "user_interface.hpp"
-#include "window_interface.hpp"
+#include "state_type.hpp"
 
 #include <cstdint>
 #include <iostream>
@@ -14,32 +13,29 @@ class Interface{
     private :
         uint8_t key_state;
         Float2 mouse_pos_rel;
-        Window_interface window_interface;
         User_interface user_interface;
         std::vector<uint32_t> framebuffer;
         double delta;
         int fps;
-        Camera camera;
         Input_state input_state;
-        SDL_Event events;
+        Render_state render_state;
+        System_state system_state;
         SDL_Window *window;
-        SDL_Surface *surface;
-        int width , height;
+        // SDL_Surface *surface;
         std::string title;
 
     public :
-        bool running;
-        void init();
+        void init(Input_state *i_state,Render_state *r_state,System_state *s_state);
 
-        Int2 get_window_size();
+        void get_states(Input_state *i_state,Render_state *r_state,System_state *s_state);
 
-        void update_camera();
-
-        void update(std::vector<uint32_t> framebuffer,double delta,Camera camera);
+        void update(std::vector<uint32_t> framebuffer,double delta);
 
         void run();
 
         void add_fps_to_title();
+
+        // void surface_display(std::vector<uint32_t> framebuffer);
 
         void close();
 

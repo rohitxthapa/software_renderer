@@ -1,32 +1,42 @@
 #include "../include/engine.hpp"
+#include <cstdlib>
 #include <iostream>
 
+Input_state default_input_state = {0,0,0,0,0,0,0,0,0,0,0,0,0};
+Render_state default_render_state = {0,1,0,90,0.1,100,1280,720};
+System_state default_system_state = {1};
+
 void Engine::init(){
-    interface.init();
     resource_manager.init();
     camera.init();
-    renderer.init(interface.get_window_size(),camera.get_fovy_near_far_plane());
+
+    input_state = default_input_state;
+    render_state = default_render_state;
+    system_state = default_system_state;
+
+    interface.init(&default_input_state,&default_render_state,&default_system_state);
+    renderer.init(render_state);
 
     delta = 10;
 }
 
 void Engine::run(){
-
 helper.init();
-while(interface.running) {
+while(system_state.running) {
     renderer.clear();
-    renderer.render(camera,resource_manager);
+    renderer.render(camera,resource_manager,render_state);
 
-    interface.update(renderer.get_framebuffer(),delta,camera);
+    interface.update(renderer.get_framebuffer(),delta);
     interface.run();
+    interface.get_states(&input_state,&render_state,&system_state);
 
+    camera.update(input_state,render_state,delta);
 
+    std::cout<<camera.position.x<<" "<<camera.position.y<<" "<<camera.position.z<<std::endl;
     helper.calculate_delta();
     helper.wait();
     delta = helper.get_delta();
-    helper.frame_time *= 10000000000.0;
-    helper.frame_time /= 10000000000.0;
-    std::cerr << "Frame Time : "<< helper.frame_time <<" Fps :"<< helper.fps << std::endl;
+    // std::cerr << "Frame Time : "<< helper.frame_time <<" Fps :"<< helper.fps << std::endl;
 }
 
 }
