@@ -6,7 +6,8 @@ struct System_state{
 };
 
 struct Render_state {
-    bool changed;
+    int render; // when it has more features it or other flags may be used to
+    // define rasterization , ray casting , ray tracing , wireframe , solid view etc
     bool rasterization;
     bool wireframe;
     float fov;

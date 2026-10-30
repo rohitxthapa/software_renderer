@@ -2,7 +2,9 @@
 #define _INTERFACE_
 
 #include <SDL3/SDL.h>
+#include "camera.hpp"
 #include "custom_math.hpp"
+#include "resource_manager.hpp"
 #include "user_interface.hpp"
 #include "state_type.hpp"
 
@@ -23,9 +25,11 @@ class Interface{
         SDL_Window *window;
         // SDL_Surface *surface;
         std::string title;
+        Camera *camera;
+        Resource_manager *resource_manager;
 
     public :
-        void init(Input_state *i_state,Render_state *r_state,System_state *s_state);
+        void init(Input_state *i_state,Render_state *r_state,System_state *s_state,Resource_manager *resource_manager);
 
         void get_states(Input_state *i_state,Render_state *r_state,System_state *s_state);
 

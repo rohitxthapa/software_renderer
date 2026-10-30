@@ -6,8 +6,10 @@ void Helper::init(){
     start = SDL_GetPerformanceCounter();
     frame_time_100 = 10;
     frame_time_60 = 16.666666666666668;
+    frame_time_50 = 20;
     frame_time_30 = 33.333333333333336;
-    wait_frame_time = frame_time_100;
+    frame_time_10 = 100;
+    wait_frame_time = frame_time_50;
 
 }
 

@@ -6,6 +6,8 @@
 
 class Camera {
     public :
+        float yaw;
+        float pitch;
         Float3 position ;
         Float3 forward ;
         Float3 right ;

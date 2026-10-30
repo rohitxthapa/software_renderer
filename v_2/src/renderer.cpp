@@ -2,8 +2,12 @@
 #include <cstdint>
 #include <iostream>
 
-void Renderer::init(Render_state &r_state){
+void Renderer::init(Render_state &r_state,Camera *camera,Resource_manager *resource_manager){
+    this->camera = camera;
+    this->resource_manager = resource_manager;
+
     render_state = r_state;
+
     framebuffer.resize(render_state.width * render_state.height);
 
     aspect_ratio = (float)render_state.width/render_state.height;
@@ -58,10 +62,10 @@ void Renderer::draw_line(int x0, int y0, int x1, int y1, uint32_t color = 0xFF00
     }
 }
 
-std::vector<Float4> Renderer::to_view_space(Model_data &pmodel, Camera &camera){
+std::vector<Float4> Renderer::to_view_space(Model_data &pmodel){
     std::vector<Float4> vertices;
 
-    Float4x4 vmatrix = get_view_matrix(camera.position,camera.forward);
+    Float4x4 vmatrix = get_view_matrix(camera->position,camera->forward);
     vmatrix = mul(projection_matrix,vmatrix);
 
     for(Float3 vertex:pmodel.model_mesh.vertices){
@@ -153,26 +157,30 @@ void Renderer::rasterization(){
         }
     }
 }
+
 void Renderer::update(Render_state &r_state){
-    if(r_state.changed) init(r_state);
-    // for now lets juts put r_state.changed as flag
-    // but we count have conpared now and then values but i think if we use
-    // changed flag less data read maybe
+    render_state = r_state;
 }
 
-void Renderer::render(Camera &camera,Resource_manager &res_manager,Render_state &r_state){
+void Renderer::render(Render_state &r_state){
     // here lets take only first model , i still have to put the postion datamember in mesh_data class and also i should
     // put dta members that stores the minimum and maximum x and y or maybe the positon could do the part for culling
     // before transformation
     update(r_state);
-    if(r_state.rasterization || r_state.wireframe || r_state.changed){
-        Model_data pmodel = res_manager.models["Cube"];
+        std::string model_name;
+
+        for(const auto& temp_model : resource_manager->models){
+            if(temp_model.second.show) model_name = temp_model.first ;
+        }
+        Model_data pmodel = resource_manager->models[model_name];
+
+
         mmodel.model_mesh.clear();
 
         mmodel.model_mesh.vertices.reserve(pmodel.model_mesh.vertices.size());
         mmodel.model_mesh.triangles.reserve(pmodel.model_mesh.triangles.size());
 
-        std::vector<Float4> vertices = to_view_space(pmodel , camera);
+        std::vector<Float4> vertices = to_view_space(pmodel);
 
         clipping(vertices,pmodel.model_mesh.triangles);
 
@@ -180,7 +188,6 @@ void Renderer::render(Camera &camera,Resource_manager &res_manager,Render_state 
 
         if(r_state.rasterization)rasterization();
         if(r_state.wireframe)wireframe();
-    }
 
 }
 

@@ -1,6 +1,7 @@
 #include "../include/resource_manager.hpp"
 #include "../include/parser.hpp"
 
+#include <iostream>
 #include <vector>
 
 void Mesh_data::clear(){
@@ -20,8 +21,23 @@ void Model_data::clear(){
 }
 
 void Resource_manager::init(){
-    std::filesystem::path file_path = "../assets/cube.obj";
-    parser.parse(file_path,this->models);
 }
-void Resource_manager::run(){}
-void Resource_manager::close(){}
+
+void Resource_manager::queue_model_load(std::filesystem::path &path){
+    load_queue.push(path);
+}
+void Resource_manager::run(){
+    if(!load_queue.empty()){
+        std::filesystem::path next_file = load_queue.front();
+        load_queue.pop();
+
+        std::cout<<"Loading asset : "<<next_file<<std::endl;
+        parser.parse(next_file,models);
+    }
+}
+void Resource_manager::close(){
+    for(auto& model : models){
+        model.second.clear();
+    }
+    models.clear();
+}

@@ -4,8 +4,10 @@
 #include "parser.hpp"
 #include "custom_math.hpp"
 
+#include <queue>
 #include <unordered_map>
 #include <vector>
+#include <list>
 
 struct Face{
     // struct for face , face can be Xgon , so i am using vector;
@@ -43,7 +45,9 @@ struct animation_and_skeleton{
 
 struct Model_data {
     Mesh_data model_mesh; // vector because we have load multiple mdoels
+    bool show;
     bool have_animation_or_skeleton ;
+
     animation_and_skeleton model_ani ;
 
     void clear();
@@ -55,9 +59,11 @@ class Resource_manager{
     std::unordered_map<std::string,Model_data> models;
     Parser parser;
 
+    std::queue<std::filesystem::path> load_queue;
+    std::list<std::string> loaded_file_path;
+
     void init();
-    // as far a i know there is no need for run but i think we may need a function which runs
-    // everytime per few ticks and checks if there are model to load or other stuff
+    void queue_model_load(std::filesystem::path& path);
     void run();
     void close();
 };

@@ -11,11 +11,14 @@ class Helper{
         uint64_t end;
 
     public:
-        double frame_time;
-        double wait_frame_time;
-        double frame_time_100;
-        double frame_time_60;
-        double frame_time_30;
+        float frame_time;
+        float wait_frame_time;
+        float frame_time_100;
+        float frame_time_60;
+        float frame_time_50;
+        float frame_time_30;
+        float frame_time_10;
+
         float fps;
 
         void init ();

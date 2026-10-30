@@ -12,10 +12,14 @@ struct Int2{
 
 struct Int3{
     int x , y , z;
+
 };
 
 struct Float2 {
     float x , y;
+    Float2() = default;
+    Float2(float x, float y): x(x),y(y) {}
+    Float2(float v): x(v),y(v) {}
 };
 
 constexpr float PI = 3.14159265358979323846f;

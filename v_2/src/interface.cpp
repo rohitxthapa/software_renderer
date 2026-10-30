@@ -5,11 +5,13 @@
 #include <cstdint>
 #include <cstring>
 
-void Interface::init(Input_state *i_state,Render_state *r_state,System_state *s_state){
+void Interface::init(Input_state *i_state,Render_state *r_state,System_state *s_state,Resource_manager *resource_manager){
     title = "renderer_fps_00000000";
     input_state = *i_state;
     render_state = *r_state;
     system_state = *s_state;
+
+    this->resource_manager = resource_manager;
 
     if(!SDL_Init(SDL_INIT_VIDEO)) std::cerr<<"SDL couldn't initialize";
 
@@ -19,7 +21,7 @@ void Interface::init(Input_state *i_state,Render_state *r_state,System_state *s_
     // surface = SDL_GetWindowSurface(window);
     // if(surface == nullptr) std::cerr<<"surface == nullptr"<<std::endl;
 
-    user_interface.init(window,render_state.width,render_state.height,&input_state,&render_state,&system_state);
+    user_interface.init(window,resource_manager,&input_state,&render_state,&system_state);
 }
 
 void Interface::get_states(Input_state *i_state,Render_state *r_state,System_state *s_state){
@@ -27,8 +29,9 @@ void Interface::get_states(Input_state *i_state,Render_state *r_state,System_sta
     *r_state = render_state;
     *s_state = system_state;
 
+    bool temp = input_state.mouse_lock;
     input_state = {0};
-    render_state.changed = false;
+    input_state.mouse_lock = temp;
 }
 
 void Interface::update(std::vector<uint32_t> framebuffer,double delta){
